@@ -1,7 +1,6 @@
 package com.main;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -27,23 +26,11 @@ public class BlackjackGUI extends JFrame {
 	static Random random = new Random();
 
 	// Card deck (2-10 are their values, face cards (J, Q, K) are 10, and Ace is 11)
-	Card[] singleDeck = { 
-			new Card(2, Color.black),
-			new Card(3, Color.blue),
-			new Card(4, Color.cyan),
-			new Card(5, Color.darkGray),
-			new Card(6, Color.gray),
-			new Card(7, Color.green),
-			new Card(8, Color.lightGray),
-			new Card(9, Color.magenta),
-			new Card(10, Color.orange),
-			
-			new Card(10, Color.orange),
-			new Card(10, Color.pink),
-			new Card(10, Color.red),
-			
-			new Card(11, Color.yellow)
-	};
+	Card[] singleDeck = { new Card(2), new Card(3), new Card(4), new Card(5), new Card(6), new Card(7), new Card(8), new Card(9), new Card(10),
+
+			new Card(10), new Card(10), new Card(10),
+
+			new Card(11) };
 	List<Card> deck = new ArrayList<>();
 	final int DECK_COUNT = 2; // Number of decks used in the game
 
@@ -112,9 +99,9 @@ public class BlackjackGUI extends JFrame {
 	}
 
 	private void dealerPlay() {
-	    while (dealerHand.getValue() < 17 || (dealerHand.getValue() == 17 && dealerHand.isSoft)) {
-	        dealerHand.addCard(dealCard());
-	    }
+		while (dealerHand.getValue() < 17 || (dealerHand.getValue() == 17 && dealerHand.isSoft)) {
+			dealerHand.addCard(dealCard());
+		}
 	}
 
 	private void startNewGame() {
@@ -148,7 +135,7 @@ public class BlackjackGUI extends JFrame {
 			} else if (source == splitButton) {
 				textArea.append("Can't split!");
 				System.out.println("Can't split!");
-				//split();
+				// split();
 			}
 		}
 
@@ -227,8 +214,8 @@ public class BlackjackGUI extends JFrame {
 		} else {
 			textArea.append("Hand lost to dealer.\n");
 		}
-		
-		if((playerHands.size() - 1) > playerHands.indexOf(currentHand)) {
+
+		if ((playerHands.size() - 1) > playerHands.indexOf(currentHand)) {
 			currentHand = playerHands.get((playerHands.indexOf(currentHand) - 1) + 1);
 			return;
 		}
