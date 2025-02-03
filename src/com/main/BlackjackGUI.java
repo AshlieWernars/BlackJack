@@ -1,6 +1,6 @@
 package com.main;
 
-import java.awt.BorderLayout;
+import java.awt.Canvas;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -9,19 +9,12 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.WindowConstants;
 
-public class BlackjackGUI extends JFrame {
+public class BlackjackGUI extends Canvas {
 
 	private static final long serialVersionUID = 1L;
-
-	enum Action {
-		HIT, STAND, DOUBLE, SPLIT
-	}
 
 	private final Random random = new Random();
 
@@ -48,6 +41,8 @@ public class BlackjackGUI extends JFrame {
 	private final int DECK_COUNT = 6; // Number of decks used in the game
 
 	private final JTextArea textArea;
+
+	private final JPanel buttonPanel;
 	private final JButton hitButton;
 	private final JButton standButton;
 	private final JButton doubleButton;
@@ -60,17 +55,12 @@ public class BlackjackGUI extends JFrame {
 
 	private Hand currentHand = null;
 
+	@SuppressWarnings("unused")
 	public BlackjackGUI() {
-		setTitle("Blackjack Game");
-		setSize(600, 400);
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setLayout(new BorderLayout());
-
 		textArea = new JTextArea();
 		textArea.setEditable(false);
-		add(new JScrollPane(textArea), BorderLayout.CENTER);
 
-		JPanel buttonPanel = new JPanel();
+		buttonPanel = new JPanel();
 		hitButton = new JButton("Hit");
 		standButton = new JButton("Stand");
 		doubleButton = new JButton("Double");
@@ -83,7 +73,7 @@ public class BlackjackGUI extends JFrame {
 		buttonPanel.add(splitButton);
 		buttonPanel.add(newGameButton);
 
-		add(buttonPanel, BorderLayout.SOUTH);
+		new Display(600, 400, "Blackjack Game", this);
 
 		hitButton.addActionListener(new ButtonListener());
 		standButton.addActionListener(new ButtonListener());
@@ -252,7 +242,16 @@ public class BlackjackGUI extends JFrame {
 		return deck.remove(deck.size() - 1);
 	}
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		new BlackjackGUI().setVisible(true);
+		new BlackjackGUI();
+	}
+
+	public JPanel getButtonPanel() {
+		return buttonPanel;
+	}
+
+	public JTextArea getTextArea() {
+		return textArea;
 	}
 }
