@@ -23,29 +23,42 @@ public class BlackjackGUI extends JFrame {
 		HIT, STAND, DOUBLE, SPLIT
 	}
 
-	static Random random = new Random();
+	private final Random random = new Random();
 
 	// Card deck (2-10 are their values, face cards (J, Q, K) are 10, and Ace is 11)
-	Card[] singleDeck = { new Card(2), new Card(3), new Card(4), new Card(5), new Card(6), new Card(7), new Card(8), new Card(9), new Card(10),
+	private final Card[] singleDeck = { //
+			new Card(2), //
+			new Card(3), //
+			new Card(4), //
+			new Card(5), //
+			new Card(6), //
+			new Card(7), //
+			new Card(8), //
+			new Card(9), //
+			new Card(10), //
 
-			new Card(10), new Card(10), new Card(10),
+			new Card(10), //
+			new Card(10), //
+			new Card(10), //
 
-			new Card(11) };
-	List<Card> deck = new ArrayList<>();
-	final int DECK_COUNT = 2; // Number of decks used in the game
+			new Card(11)//
+	};
 
-	private JTextArea textArea;
-	private JButton hitButton;
-	private JButton standButton;
-	private JButton doubleButton;
-	private JButton splitButton;
-	private JButton newGameButton;
+	private final List<Card> deck = new ArrayList<>();
+	private final int DECK_COUNT = 6; // Number of decks used in the game
 
-	private ArrayList<Hand> playerHands = new ArrayList<>(4);
+	private final JTextArea textArea;
+	private final JButton hitButton;
+	private final JButton standButton;
+	private final JButton doubleButton;
+	private final JButton splitButton;
+	private final JButton newGameButton;
+
+	private final ArrayList<Hand> playerHands = new ArrayList<>(4);
 	private Hand dealerHand;
 	private boolean handFinished = false;
 
-	Hand currentHand = null;
+	private Hand currentHand = null;
 
 	public BlackjackGUI() {
 		setTitle("Blackjack Game");
@@ -178,8 +191,14 @@ public class BlackjackGUI extends JFrame {
 		private void hit() {
 			currentHand.addCard(dealCard());
 			updateTextArea();
+			doubleButton.setEnabled(false);
 			if (currentHand.isBust()) {
 				textArea.append("\nHand busted!\n");
+				handFinished = true;
+				dealerPlay();
+				updateTextArea();
+				determineResult();
+			} else if (currentHand.getValue() == 21) {
 				handFinished = true;
 				dealerPlay();
 				updateTextArea();
