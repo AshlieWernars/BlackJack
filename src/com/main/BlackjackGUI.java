@@ -208,9 +208,7 @@ public class BlackjackGUI extends JFrame {
 	}
 
 	private void updateTextArea() {
-		textArea.setText("");
-		textArea.append("Your hand: " + currentHand + "\n");
-		textArea.append("Dealer's upcard: " + dealerHand.cards.get(0).getValue() + "\n");
+		textArea.setText("Your hand: " + currentHand + "\n" + "Dealer's upcard: " + dealerHand.cards.get(0).getValue() + "\n");
 
 		if (handFinished) {
 			textArea.append("Dealer's hand: " + dealerHand + "\n");
