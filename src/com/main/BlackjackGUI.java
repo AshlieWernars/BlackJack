@@ -1,8 +1,6 @@
 package com.main;
 
 import java.awt.Canvas;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -75,13 +73,18 @@ public class BlackjackGUI extends Canvas {
 
 		new Display(600, 400, "Blackjack Game", this);
 
-		hitButton.addActionListener(new ButtonListener());
-		standButton.addActionListener(new ButtonListener());
-		doubleButton.addActionListener(new ButtonListener());
-		splitButton.addActionListener(new ButtonListener());
+		hitButton.addActionListener(e -> hit());
+		standButton.addActionListener(e -> stand());
+		doubleButton.addActionListener(e -> doubleDown());
+		splitButton.addActionListener(e -> split());
 		newGameButton.addActionListener(e -> startNewGame());
 
+		run();
+	}
+
+	private void run() {
 		initializeDeck();
+
 		startNewGame();
 	}
 
@@ -108,92 +111,88 @@ public class BlackjackGUI extends Canvas {
 	}
 
 	private void startNewGame() {
-		playerHands.clear();
-		playerHands.add(new Hand(dealCard(), dealCard()));
-		currentHand = playerHands.get(0);
-		dealerHand = new Hand(dealCard(), dealCard());
-		handFinished = false;
-		updateTextArea();
 		newGameButton.setEnabled(false);
 		hitButton.setEnabled(true);
 		standButton.setEnabled(true);
 		doubleButton.setEnabled(true);
+		playerHands.clear();
+		handFinished = false;
+
+		if (deck.size() < (DECK_COUNT * singleDeck.length / 2)) {
+			initializeDeck();
+		}
+
+		playerHands.add(new Hand(dealCard(), dealCard()));
+		currentHand = playerHands.get(0);
 		splitButton.setEnabled(playerHands.get(0).isPair());
+
+		dealerHand = new Hand(dealCard(), dealCard());
+		
+		if (currentHand.getValue() == 21) {
+			// Disable action buttons and enable the New Game button
+			hitButton.setEnabled(false);
+			standButton.setEnabled(false);
+			doubleButton.setEnabled(false);
+			splitButton.setEnabled(false);
+			handFinished = true;
+			dealerPlay();
+			updateTextArea();
+			determineResult();
+		}
+
+		updateTextArea();
 	}
 
-	private class ButtonListener implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (handFinished) {
-				return;
-			}
+	private void split() {
+		textArea.append("Can't split!");
+		System.out.println("Can't split!");
+		return;
 
-			JButton source = (JButton) e.getSource();
-			if (source == hitButton) {
-				hit();
-			} else if (source == standButton) {
-				stand();
-			} else if (source == doubleButton) {
-				doubleDown();
-			} else if (source == splitButton) {
-				textArea.append("Can't split!");
-				System.out.println("Can't split!");
-				// split();
-			}
-		}
+		/*
+		 * if (currentHand.isPair()) { // Perform the split playerHands.add(new
+		 * Hand(currentHand.cards.get(1), dealCard())); currentHand.cards.remove(1);
+		 * currentHand.addCard(dealCard());
+		 * 
+		 * handFinished = false;
+		 * 
+		 * textArea.append("\nHands split. Play the first hand.\n");
+		 * 
+		 * hitButton.setEnabled(true); standButton.setEnabled(true);
+		 * doubleButton.setEnabled(true); splitButton.setEnabled(false); } else {
+		 * textArea.append("\nCannot split with the current hand.\n"); }
+		 */
+	}
 
-		@SuppressWarnings("unused")
-		private void split() {
-			if (currentHand.isPair()) {
-				// Perform the split
-				playerHands.add(new Hand(currentHand.cards.get(1), dealCard()));
-				currentHand.cards.remove(1);
-				currentHand.addCard(dealCard());
+	private void doubleDown() {
+		currentHand.addCard(dealCard());
+		handFinished = true;
+		dealerPlay();
+		updateTextArea();
+		determineResult();
+	}
 
-				handFinished = false;
+	private void stand() {
+		handFinished = true;
+		dealerPlay();
+		updateTextArea();
+		determineResult();
+	}
 
-				textArea.append("\nHands split. Play the first hand.\n");
-
-				hitButton.setEnabled(true);
-				standButton.setEnabled(true);
-				doubleButton.setEnabled(true);
-				splitButton.setEnabled(false);
-			} else {
-				textArea.append("\nCannot split with the current hand.\n");
-			}
-		}
-
-		private void doubleDown() {
-			currentHand.addCard(dealCard());
+	private void hit() {
+		currentHand.addCard(dealCard());
+		updateTextArea();
+		doubleButton.setEnabled(false);
+		if (currentHand.isBust()) {
+			textArea.append("\nHand busted!\n");
 			handFinished = true;
 			dealerPlay();
 			updateTextArea();
 			determineResult();
-		}
-
-		private void stand() {
+		} else if (currentHand.getValue() == 21) {
 			handFinished = true;
 			dealerPlay();
 			updateTextArea();
 			determineResult();
-		}
-
-		private void hit() {
-			currentHand.addCard(dealCard());
-			updateTextArea();
-			doubleButton.setEnabled(false);
-			if (currentHand.isBust()) {
-				textArea.append("\nHand busted!\n");
-				handFinished = true;
-				dealerPlay();
-				updateTextArea();
-				determineResult();
-			} else if (currentHand.getValue() == 21) {
-				handFinished = true;
-				dealerPlay();
-				updateTextArea();
-				determineResult();
-			}
 		}
 	}
 
@@ -236,9 +235,6 @@ public class BlackjackGUI extends Canvas {
 	}
 
 	private Card dealCard() {
-		if (deck.size() < (DECK_COUNT * singleDeck.length / 2)) {
-			initializeDeck();
-		}
 		return deck.remove(deck.size() - 1);
 	}
 

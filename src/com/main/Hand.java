@@ -18,27 +18,26 @@ public class Hand {
 	}
 
 	private void updateValue() {
-		int aceCount = 0;
 		List<Card> aceCards = new ArrayList<>();
 		int sum = 0;
+
 		for (Card card : cards) {
 			sum += card.getValue();
 			if (card.getValue() == 11) {
-				aceCount++;
 				aceCards.add(card);
 			}
 		}
 
 		value = sum;
 
-		// Adjust for Aces counted as 1 if the total exceeds 21
+		// Adjust Aces to 1 if needed
 		while (value > 21 && !aceCards.isEmpty()) {
-			aceCards.get(aceCount - 1).setValue(1);
+			Card ace = aceCards.remove(aceCards.size() - 1);
+			ace.setValue(1);
 			value -= 10;
-			aceCards.remove(aceCards.get(aceCount - 1));
 		}
 
-		isSoft = aceCount > 0;
+		isSoft = !aceCards.isEmpty();
 	}
 
 	public int getValue() {

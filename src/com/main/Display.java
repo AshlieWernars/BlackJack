@@ -19,7 +19,6 @@ public class Display {
 		frame.add(new JScrollPane(blackJack.getTextArea()), BorderLayout.CENTER);
 		frame.add(blackJack.getButtonPanel(), BorderLayout.SOUTH);
 		frame.setResizable(false);
-		frame.add(blackJack);
 		frame.setVisible(true);
 	}
 }
